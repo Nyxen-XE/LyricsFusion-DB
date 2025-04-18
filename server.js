@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 // const cors = require('cors');
 const { getFirestore } = require('firebase-admin/firestore');
 
-const serviceAccount = require('./private-key/secret-file.json');
+const serviceAccount = require('./private-key/listify-5fd65-firebase-adminsdk-vfup7-f27ff0cb44.json');
 
 const server = express();
 
