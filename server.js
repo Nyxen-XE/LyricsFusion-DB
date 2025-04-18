@@ -6,7 +6,7 @@ const cors = require('cors');
 const { getFirestore } = require('firebase-admin/firestore');
 
 const server = express();
-const serviceAccount = require('./private-key/listify-5fd65-firebase-adminsdk-vfup7-f27ff0cb44.json'); // Ensure this file is in the same directory
+const serviceAccount = require('./private-key/exposure-94eb1-firebase-adminsdk-799fh-b101aed240.json'); // Ensure this file is in the same directory
 // Middleware
 server.use(cors()); // Optional: Enable if frontend will talk to it
 
@@ -27,6 +27,8 @@ require('dotenv').config();
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  storageBucket: "listify-5fd65.appspot.com",
+
   databaseURL: "https://listify-5fd65.firebaseio.com",
 });
 
