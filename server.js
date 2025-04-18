@@ -1,7 +1,7 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
-const cors = require('cors');
+// const cors = require('cors');
 const { getFirestore } = require('firebase-admin/firestore');
 
 const serviceAccount = require('./private-key/secret-file.json');
@@ -9,7 +9,7 @@ const serviceAccount = require('./private-key/secret-file.json');
 const server = express();
 
 // Middleware
-server.use(cors()); // Optional: Enable if frontend will talk to it
+// server.use(cors()); // Optional: Enable if frontend will talk to it
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
