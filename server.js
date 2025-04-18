@@ -6,7 +6,7 @@ const cors = require('cors');
 const { getFirestore } = require('firebase-admin/firestore');
 
 const server = express();
-const serviceAccount = require('./private-key/exposure-94eb1-firebase-adminsdk-799fh-7aa224f5f3.json'); // Ensure this file is in the same directory
+const serviceAccount = require('./private-key/exposure-94eb1-firebase-adminsdk-799fh-130206bf27.json'); // Ensure this file is in the same directory
 // Middleware
 server.use(cors()); // Optional: Enable if frontend will talk to it
 
