@@ -9,6 +9,16 @@ const server = express();
 const serviceAccount = require('./private-key/listify-5fd65-firebase-adminsdk-vfup7-f27ff0cb44.json'); // Ensure this file is in the same directory
 // Middleware
 server.use(cors()); // Optional: Enable if frontend will talk to it
+
+server.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+//Allow post requests from any origin
+server.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+server.use(express.json({ limit: '50mb' })); // Parse JSON bodies (as sent by API clients)
+
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
