@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev": "echo 'Starting development server...' && nodemon index.js",
-    "start": "echo 'Starting production server...' && node index.js"
+    "dev": "echo 'Starting development server...' && nodemon server.js",
+    "start": "echo 'Starting production server...' && node server.js"
   },
   "keywords": [],
   "author": "Nyxen-XE",
