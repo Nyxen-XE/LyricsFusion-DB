@@ -19,9 +19,12 @@ admin.initializeApp({
   credential: admin.credential.cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'), // ← this is the KEY fix
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),// Replace escaped newlines with actual newlines
+
   }),
 });
+
+// console.log(process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'))
 
 const db = getFirestore();
 const lyricsCollection = db.collection("Lyrics");
@@ -44,21 +47,12 @@ server.post('/save_lyrics', async (req, res) => {
     }
 
 
-    if (!lyricsData.title || !lyricsData.artist || !lyricsData.lyrics) {
-        console.error(`[LYRICS][❌] Validation failed:`, lyricsData);
-
-        await db.collection("Errors").add({
-            error: "Missing required fields: title, artist, lyrics",
-            timestamp: new Date()
-        });
-        return res.status(400).json({ message: "Missing required fields: title, artist, lyrics" });
-    }
-
+ 
     // Add timestamp
     lyricsData.timestamp = new Date();
 
     await lyricsCollection.add(lyricsData);
-    console.log(`[LYRICS][✔] Saved: "${lyricsData.title}" by ${lyricsData.artist}`);
+    console.log("Lyrics saved successfully:", lyricsData);
     res.status(200).json({ message: "Lyrics saved successfully." });
 
   } catch (error) {
