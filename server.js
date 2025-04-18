@@ -6,25 +6,22 @@ const cors = require('cors');
 const { getFirestore } = require('firebase-admin/firestore');
 
 const server = express();
-
+const serviceAccount = require('./private-key/listify-5fd65-firebase-adminsdk-vfup7-f27ff0cb44.json'); // Ensure this file is in the same directory
 // Middleware
 server.use(cors()); // Optional: Enable if frontend will talk to it
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
-
 require('dotenv').config();
 
+// Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),// Replace escaped newlines with actual newlines
-
-  }),
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://listify-5fd65.firebaseio.com",
 });
 
 // console.log(process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'))
+
 
 const db = getFirestore();
 const lyricsCollection = db.collection("Lyrics");
