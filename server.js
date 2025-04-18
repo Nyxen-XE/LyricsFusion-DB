@@ -1,27 +1,31 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
-// const cors = require('cors');
-const { getFirestore } = require('firebase-admin/firestore');
+const cors = require('cors');
 
-const serviceAccount = require('./private-key/listify-5fd65-firebase-adminsdk-vfup7-f27ff0cb44.json');
+const { getFirestore } = require('firebase-admin/firestore');
 
 const server = express();
 
 // Middleware
-// server.use(cors()); // Optional: Enable if frontend will talk to it
+server.use(cors()); // Optional: Enable if frontend will talk to it
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
-// Firebase Admin Init
+require('dotenv').config();
+
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'), // ← this is the KEY fix
+  }),
 });
 
 const db = getFirestore();
 const lyricsCollection = db.collection("Lyrics");
-const errosCollection = db.collection("Errors")
+
 
 // API Route to Save Lyrics
 server.post('/save_lyrics', async (req, res) => {
@@ -29,11 +33,22 @@ server.post('/save_lyrics', async (req, res) => {
     const lyricsData = req.body;
 
     // Basic Validation
-    if (!lyricsData || !lyricsData.title || !lyricsData.artist || !lyricsData.lyrics) {
-        // Save error to Firestore
-        await errosCollection.add({
-            error: "Missing required fields",
-            data: lyricsData,
+    if (!lyricsData) {
+        console.error(`[LYRICS][❌] Validation failed:`, lyricsData);
+        //Save errors to Firestore
+        await db.collection("Errors").add({
+            error: "No data provided",
+            timestamp: new Date()
+        });
+        return res.status(400).json({ message: "Missing required fields: title, artist, lyrics" });
+    }
+
+
+    if (!lyricsData.title || !lyricsData.artist || !lyricsData.lyrics) {
+        console.error(`[LYRICS][❌] Validation failed:`, lyricsData);
+
+        await db.collection("Errors").add({
+            error: "Missing required fields: title, artist, lyrics",
             timestamp: new Date()
         });
         return res.status(400).json({ message: "Missing required fields: title, artist, lyrics" });
@@ -48,12 +63,10 @@ server.post('/save_lyrics', async (req, res) => {
 
   } catch (error) {
     console.error(`[LYRICS][❌] Save failed:`, error.message);
-    await errosCollection.add({
-      error: "Internal Server Error",
-      data: req.body,
-      timestamp: new Date()
+    await db.collection("Errors").add({
+        error: error.message,
+        timestamp: new Date()
     });
-
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

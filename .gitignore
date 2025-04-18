@@ -2,3 +2,5 @@ node_modules/
 private-key/
 # Ignore all files in the private-key directory
 /*
+.env
+./main.py
